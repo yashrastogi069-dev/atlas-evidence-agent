@@ -28,7 +28,6 @@ import {
 import { notifyOwner } from "../_core/notification";
 import { storagePut } from "../storage";
 import { buildSemanticTerms, chunkText, expandRetrievalQuery, extractTextFromUpload, generateEvidenceAnswer, rankEvidence, shouldDecline, tokenize } from "../lib/knowledge";
-import { isExternalActionAllowed } from "../lib/controls";
 import { adminProcedure, protectedProcedure, router } from "../_core/trpc";
 
 const MAX_UPLOAD_BYTES = 12 * 1024 * 1024;
@@ -174,9 +173,9 @@ export const knowledgeRouter = router({
       return { draftId, status: "pending_approval" as const };
     }),
     review: adminProcedure.input(z.object({ draftId: z.number().int().positive(), status: z.enum(["approved", "rejected"]), reviewerNote: z.string().trim().max(1200).optional() })).mutation(async ({ ctx, input }) => {
-      await reviewWorkflowDraft(input.draftId, ctx.user.id, input.status, input.reviewerNote);
+      const review = await reviewWorkflowDraft(input.draftId, ctx.user.id, input.status, input.reviewerNote);
       await addAuditEvent({ actorUserId: ctx.user.id, eventType: `workflow.draft_${input.status}`, entityType: "workflow_draft", entityId: input.draftId, details: { automatedAction: false } });
-      return { success: true, externalActionPerformed: isExternalActionAllowed() };
+      return { success: true, externalActionPerformed: review.externalActionPerformed };
     }),
   }),
   audit: adminProcedure.input(z.object({ limit: z.number().int().min(1).max(200).default(80) })).query(async ({ input }) => listAuditEvents(input.limit)),

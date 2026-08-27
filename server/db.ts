@@ -15,7 +15,9 @@ import {
   workflowDrafts,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import { buildAuditEvent, type AuditEventInput } from "./lib/audit";
 import type { RetrievalCandidate } from "./lib/knowledge";
+import { buildDraftValues, buildWorkflowReview, type DraftReviewStatus } from "./lib/workflow";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -62,24 +64,10 @@ export async function getUserByOpenId(openId: string) {
   return result[0];
 }
 
-export async function addAuditEvent(input: {
-  actorUserId?: number | null;
-  eventType: string;
-  entityType: string;
-  entityId?: string | number | null;
-  severity?: "info" | "warning" | "high";
-  details?: Record<string, unknown>;
-}) {
+export async function addAuditEvent(input: AuditEventInput) {
   const db = await getDb();
   if (!db) return;
-  await db.insert(auditEvents).values({
-    actorUserId: input.actorUserId ?? null,
-    eventType: input.eventType,
-    entityType: input.entityType,
-    entityId: input.entityId === undefined || input.entityId === null ? null : String(input.entityId),
-    severity: input.severity ?? "info",
-    details: input.details ?? null,
-  });
+  await db.insert(auditEvents).values(buildAuditEvent(input));
 }
 
 export async function listKnowledgeSources(role: "admin" | "user") {
@@ -284,12 +272,7 @@ export async function addFeedback(input: { messageId: number; rating: "helpful" 
 export async function createWorkflowDraft(input: { title: string; draftType: "response" | "summary" | "record_update" | "other"; content: string; sourceMessageId?: number; targetSystem?: string; requestedByUserId: number }) {
   const db = await getDb();
   if (!db) throw new Error("Database is unavailable.");
-  const result = await db.insert(workflowDrafts).values({
-    ...input,
-    sourceMessageId: input.sourceMessageId ?? null,
-    targetSystem: input.targetSystem ?? null,
-    status: "pending_approval",
-  });
+  const result = await db.insert(workflowDrafts).values(buildDraftValues(input));
   return Number(result[0].insertId);
 }
 
@@ -300,10 +283,12 @@ export async function listWorkflowDrafts(role: "admin" | "user", userId: number)
   return db.select().from(workflowDrafts).where(where).orderBy(desc(workflowDrafts.createdAt));
 }
 
-export async function reviewWorkflowDraft(draftId: number, reviewerUserId: number, status: "approved" | "rejected", reviewerNote?: string) {
+export async function reviewWorkflowDraft(draftId: number, reviewerUserId: number, status: DraftReviewStatus, reviewerNote?: string) {
   const db = await getDb();
   if (!db) throw new Error("Database is unavailable.");
-  await db.update(workflowDrafts).set({ status, reviewedByUserId: reviewerUserId, reviewerNote: reviewerNote ?? null, reviewedAt: new Date() }).where(eq(workflowDrafts.id, draftId));
+  const review = buildWorkflowReview("admin", status, reviewerUserId, reviewerNote);
+  await db.update(workflowDrafts).set({ status: review.status, reviewedByUserId: review.reviewedByUserId, reviewerNote: review.reviewerNote, reviewedAt: review.reviewedAt }).where(eq(workflowDrafts.id, draftId));
+  return review;
 }
 
 export async function listEvaluationCases() {
