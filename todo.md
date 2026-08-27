@@ -21,7 +21,7 @@
 - [x] Deliver one consolidated end-of-build checklist for user-provided source documents, account connections, access approvals, and firm-specific policies.
 - [x] Add specialized multi-capability agent modes for knowledge answers, source comparison, policy-aware drafting, and controlled research planning.
 - [x] Create a public GitHub repository, add public-safe documentation and ignore rules, and push the completed source code without secrets or firm documents.
-- [ ] Synchronize the public repository after the final completed milestone.
-- [ ] Verify the public repository includes the final checklist and matches the released source state before delivery.
+- [x] Synchronize the public repository after the final completed milestone.
+- [x] Verify the public repository includes the final checklist and matches the released source state before delivery.
 - [x] Add and run Vitest coverage for append-only audit-event payload construction and key audit metadata.
 - [x] Add and run Vitest coverage for draft creation, administrator review, and the no-external-action workflow boundary.
