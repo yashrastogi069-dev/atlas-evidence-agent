@@ -17,10 +17,10 @@
 - [x] Add connection-readiness guidance for SharePoint, Google Drive, CRM, Slack, and Teams while preserving read-only/draft-only controls.
 - [x] Write and run Vitest coverage for core retrieval, authorization, workflow, and audit behavior.
 - [x] Verify the desktop and mobile interface and inspect current runtime state.
-- [ ] Create the final release checkpoint.
+- [x] Create the final release checkpoint.
 - [ ] Deliver one consolidated end-of-build checklist for user-provided source documents, account connections, access approvals, and firm-specific policies.
 - [x] Add specialized multi-capability agent modes for knowledge answers, source comparison, policy-aware drafting, and controlled research planning.
 - [x] Create a public GitHub repository, add public-safe documentation and ignore rules, and push the completed source code without secrets or firm documents.
-- [x] Synchronize the public repository after the final completed milestone.
+- [ ] Synchronize the public repository after the final completed milestone.
 - [x] Add and run Vitest coverage for append-only audit-event payload construction and key audit metadata.
 - [x] Add and run Vitest coverage for draft creation, administrator review, and the no-external-action workflow boundary.
