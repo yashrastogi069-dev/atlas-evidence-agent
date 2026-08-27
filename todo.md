@@ -29,7 +29,7 @@
 - [x] Perform deep regression checks across source governance, retrieval behavior, role controls, feedback, workflows, evaluation, audit events, notifications, and production build.
 - [x] Validate desktop and mobile visual behavior after the design refinement and resolve any review findings.
 - [x] Write a step-by-step implementation and verification report explaining the complete agent build.
-- [ ] Save, publicly synchronize, and verify the improved release without publishing confidential firm information.
+- [x] Save, publicly synchronize, and verify the improved release without publishing confidential firm information.
 - [x] Apply the evidence-led visual system to Sources, Workflows, Evaluation, Controls, and Guide with differentiated layouts, intentional empty states, and clearer approval or audit motifs.
 - [x] Re-run desktop and mobile visual review after the cross-workspace refinements and confirm the design findings are addressed.
 - [x] Refine the implementation guide with evidence-led hierarchy, traceability motifs, and a clearer connection-readiness decision gate.
