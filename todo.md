@@ -1,0 +1,23 @@
+# Project TODO
+
+- [x] Define approved-source, data-classification, permissions, and human-approval boundaries.
+- [x] Add database models for knowledge sources, documents, chunks, conversations, citations, feedback, audit events, evaluations, and draft workflows.
+- [x] Implement secure upload and object-storage metadata for approved firm documents.
+- [x] Implement document ingestion with extractable-text handling, chunking, metadata, status visibility, and owner attribution.
+- [x] Implement hybrid retrieval combining keyword relevance and semantic-style relevance with transparent evidence reranking.
+- [x] Implement evidence-grounded chat answers, source citations, and clear insufficient-evidence responses.
+- [x] Implement permission-aware retrieval and administrator/user access controls.
+- [x] Implement chat history, feedback capture, and serious-issue escalation signals.
+- [x] Implement draft-only workflow records, review queue, and human approval requirements for any future action.
+- [x] Implement evaluation workspace with test cases, expected answers, retrieval scoring, and answer-quality review.
+- [x] Implement immutable-style audit records for ingestion, retrieval, chat, feedback, drafts, approvals, and administrative actions.
+- [x] Implement owner notifications for failed ingestion, high-severity feedback, and drafts ready for review.
+- [x] Build an elegant, accessible internal workspace with knowledge, sources, evaluation, workflow, audit, and guide views.
+- [x] Write an in-app guide covering the RAG pipeline, guardrails, testing, and next recommended firm integrations.
+- [x] Add connection-readiness guidance for SharePoint, Google Drive, CRM, Slack, and Teams while preserving read-only/draft-only controls.
+- [ ] Write and run Vitest coverage for core retrieval, authorization, workflow, and audit behavior.
+- [ ] Verify the desktop and mobile interface, inspect runtime logs, and create the final checkpoint.
+- [ ] Deliver one consolidated end-of-build checklist for user-provided source documents, account connections, access approvals, and firm-specific policies.
+- [x] Add specialized multi-capability agent modes for knowledge answers, source comparison, policy-aware drafting, and controlled research planning.
+- [ ] Create a public GitHub repository, add public-safe documentation and ignore rules, and push the completed source code without secrets or firm documents.
+- [ ] Synchronize the public repository after the final completed milestone.
