@@ -26,8 +26,9 @@ import {
   updateDocumentProcessing,
 } from "../db";
 import { notifyOwner } from "../_core/notification";
+import { buildDraftReadyAlert, buildIngestionFailedAlert, buildSeriousFeedbackAlert } from "../lib/notifications";
 import { storagePut } from "../storage";
-import { buildSemanticTerms, chunkText, expandRetrievalQuery, extractTextFromUpload, generateEvidenceAnswer, rankEvidence, shouldDecline, tokenize } from "../lib/knowledge";
+import { buildSemanticTerms, chunkText, expandRetrievalQuery, extractTextFromUpload, generateEvidenceAnswer, isSupportedUpload, rankEvidence, shouldDecline, tokenize } from "../lib/knowledge";
 import { adminProcedure, protectedProcedure, router } from "../_core/trpc";
 
 const MAX_UPLOAD_BYTES = 12 * 1024 * 1024;
@@ -71,6 +72,9 @@ export const knowledgeRouter = router({
       metadata: z.object({ tags: z.array(z.string().trim().min(1).max(40)).max(12).default([]) }).default({ tags: [] }),
     })).mutation(async ({ ctx, input }) => {
       const source = assertApprovedSource(await getKnowledgeSource(input.sourceId));
+      if (!isSupportedUpload(input.mimeType, input.filename)) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Supported formats are PDF, DOCX, XLS/XLSX, CSV, TXT, Markdown, and JSON." });
+      }
       const buffer = Buffer.from(input.base64.replace(/^data:[^;]+;base64,/, ""), "base64");
       if (!buffer.length || buffer.length > MAX_UPLOAD_BYTES) {
         throw new TRPCError({ code: "PAYLOAD_TOO_LARGE", message: "Upload must be between 1 byte and 12 MB." });
@@ -109,7 +113,7 @@ export const knowledgeRouter = router({
         const errorMessage = error instanceof Error ? error.message : "Unexpected ingestion failure.";
         await updateDocumentProcessing({ documentId, status: "failed", errorMessage, extractionSummary: null });
         await addAuditEvent({ actorUserId: ctx.user.id, eventType: "document.ingestion_failed", entityType: "knowledge_document", entityId: documentId, severity: "high", details: { sourceId: source.id, errorMessage } });
-        await notifyOwner({ title: "Knowledge ingestion failed", content: `Document “${input.title}” could not be ingested. Reason: ${errorMessage}` }).catch(() => false);
+        await notifyOwner(buildIngestionFailedAlert(input.title, errorMessage)).catch(() => false);
         return { documentId, status: "failed" as const, errorMessage };
       }
     }),
@@ -157,7 +161,7 @@ export const knowledgeRouter = router({
     const severity = input.rating === "serious_issue" ? "high" : input.rating === "not_helpful" ? "warning" : "info";
     await addAuditEvent({ actorUserId: ctx.user.id, eventType: "feedback.submitted", entityType: "feedback", entityId: feedbackId, severity, details: { messageId: input.messageId, rating: input.rating } });
     if (input.rating === "serious_issue") {
-      await notifyOwner({ title: "Serious knowledge-agent feedback", content: `A user reported a serious issue with chat message ${input.messageId}. Review the audit workspace and feedback record.` }).catch(() => false);
+      await notifyOwner(buildSeriousFeedbackAlert(input.messageId)).catch(() => false);
     }
     return { feedbackId };
   }),
@@ -169,7 +173,7 @@ export const knowledgeRouter = router({
       }
       const draftId = await createWorkflowDraft({ ...input, requestedByUserId: ctx.user.id });
       await addAuditEvent({ actorUserId: ctx.user.id, eventType: "workflow.draft_created", entityType: "workflow_draft", entityId: draftId, details: { draftType: input.draftType, targetSystem: input.targetSystem ?? "internal draft" } });
-      await notifyOwner({ title: "Draft ready for human review", content: `Draft “${input.title}” is awaiting approval. No external action has been performed.` }).catch(() => false);
+      await notifyOwner(buildDraftReadyAlert(input.title)).catch(() => false);
       return { draftId, status: "pending_approval" as const };
     }),
     review: adminProcedure.input(z.object({ draftId: z.number().int().positive(), status: z.enum(["approved", "rejected"]), reviewerNote: z.string().trim().max(1200).optional() })).mutation(async ({ ctx, input }) => {

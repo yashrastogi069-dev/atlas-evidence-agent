@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chunkText, rankEvidence, shouldDecline } from "./knowledge";
+import { buildSemanticTerms, chunkText, isSupportedUpload, rankEvidence, shouldDecline, tokenize } from "./knowledge";
 
 const candidates = [
   {
@@ -43,5 +43,16 @@ describe("hybrid knowledge retrieval", () => {
     expect(chunks.length).toBeGreaterThan(2);
     expect(chunks.every(chunk => chunk.length <= 400)).toBe(true);
   });
-});
 
+  it("normalizes semantic indexing terms and removes low-value query words", () => {
+    expect(tokenize("What is the policy for travel and expenses?")).toEqual(expect.arrayContaining(["policy", "travel", "expense"]));
+    expect(tokenize("What is the policy for travel and expenses?")).not.toContain("what");
+    expect(buildSemanticTerms("Travel policy", "Employees submit expense receipts")).toContain("travel");
+  });
+
+  it("accepts approved document formats and rejects unsupported upload types", () => {
+    expect(isSupportedUpload("application/pdf", "policy.pdf")).toBe(true);
+    expect(isSupportedUpload("text/plain", "policy.txt")).toBe(true);
+    expect(isSupportedUpload("application/octet-stream", "upload.exe")).toBe(false);
+  });
+});

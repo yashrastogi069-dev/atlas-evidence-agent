@@ -46,8 +46,8 @@ function stem(term: string): string {
   if (term.endsWith("ies") && term.length > 5) return `${term.slice(0, -3)}y`;
   if (term.endsWith("ing") && term.length > 6) return term.slice(0, -3);
   if (term.endsWith("ed") && term.length > 5) return term.slice(0, -2);
-  if (term.endsWith("es") && term.length > 5) return term.slice(0, -2);
-  if (term.endsWith("s") && term.length > 4) return term.slice(0, -1);
+  if (/(sses|xes|zes|ches|shes)$/.test(term) && term.length > 5) return term.slice(0, -2);
+  if (term.endsWith("s") && !term.endsWith("ss") && term.length > 4) return term.slice(0, -1);
   return term;
 }
 
@@ -147,6 +147,14 @@ export async function expandRetrievalQuery(question: string): Promise<string> {
     console.warn("[Retrieval] Query expansion unavailable; falling back to direct hybrid search.", error);
     return question;
   }
+}
+
+export function isSupportedUpload(mimeType: string, filename: string): boolean {
+  const lowerName = filename.toLowerCase();
+  return mimeType === "application/pdf" || lowerName.endsWith(".pdf") ||
+    mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || lowerName.endsWith(".docx") ||
+    mimeType.includes("spreadsheet") || mimeType === "application/vnd.ms-excel" || /\.(xlsx|xls|csv)$/i.test(lowerName) ||
+    mimeType.startsWith("text/") || /\.(txt|md|json)$/i.test(lowerName);
 }
 
 export async function extractTextFromUpload(buffer: Buffer, mimeType: string, filename: string): Promise<string> {

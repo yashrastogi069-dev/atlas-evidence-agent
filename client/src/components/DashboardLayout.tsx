@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { BookOpenText, Bot, ChevronRight, ClipboardCheck, Database, LogOut, ShieldCheck, Sparkles, Workflow } from "lucide-react";
+import { BookOpenText, Bot, ChevronRight, ClipboardCheck, Database, LogOut, ShieldCheck, Workflow } from "lucide-react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
 
@@ -42,7 +42,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
       <div className="min-h-screen bg-[#f7f7f4] grid place-items-center p-5">
         <section className="w-full max-w-md rounded-[2rem] border border-stone-200 bg-white p-9 text-center shadow-[0_28px_80px_-38px_rgba(26,39,32,0.5)]">
-          <div className="mx-auto mb-6 grid size-14 place-items-center rounded-2xl bg-[#17372f] text-[#d7f3e3]"><Sparkles className="size-6" /></div>
+          <div className="evidence-mark evidence-mark-lg mx-auto mb-6" aria-hidden="true"><span>AE</span></div>
           <p className="eyebrow">Firm intelligence</p>
           <h1 className="mt-3 font-serif text-3xl tracking-tight text-[#17372f]">A private workspace for trusted answers.</h1>
           <p className="mt-4 text-sm leading-6 text-stone-600">Sign in to access approved knowledge sources, evidence-backed responses, and controlled internal drafts.</p>
@@ -70,7 +70,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Sidebar collapsible="icon" className="border-r border-[#dce5dd] bg-[#fbfcfa]">
         <SidebarHeader className="h-20 px-3 pt-4">
           <div className="flex items-center gap-2.5 px-1.5 group-data-[collapsible=icon]:justify-center">
-            <div className="grid size-8 shrink-0 place-items-center rounded-xl bg-[#17372f] text-[#d7f3e3]"><Sparkles className="size-4" /></div>
+            <div className="evidence-mark" aria-hidden="true"><span>AE</span></div>
             <div className="min-w-0 group-data-[collapsible=icon]:hidden">
               <p className="truncate font-serif text-base font-semibold tracking-tight text-[#17372f]">Atlas Evidence</p>
               <p className="text-[10px] font-medium tracking-[0.16em] text-[#668176] uppercase">Firm workspace</p>
@@ -96,7 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </Sidebar>
       <SidebarInset className="bg-[#f7f7f4]">
         <header className="flex h-16 items-center justify-between border-b border-[#e2e8e2] bg-[#f7f7f4]/90 px-5 backdrop-blur md:px-8">
-          <div className="flex items-center gap-3"><SidebarTrigger className="grid size-8 place-items-center rounded-lg text-[#557262] hover:bg-[#eaf1eb]" /><span className="hidden text-xs text-[#708477] sm:inline">{isMobile ? "Firm workspace" : "Approved knowledge · human-controlled workflows"}</span></div>
+          <div className="flex items-center gap-3"><SidebarTrigger className="grid size-8 place-items-center rounded-lg text-[#557262] hover:bg-[#eaf1eb]" /><span className="hidden text-xs text-[#708477] sm:inline">{isMobile ? "Firm workspace" : "Evidence ledger · human-controlled workflows"}</span></div>
           <div className="flex items-center gap-2"><span className="hidden rounded-full border border-[#c8ddcf] bg-[#e6f5eb] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-[#286145] uppercase sm:inline">Evidence mode</span><span className="size-2 rounded-full bg-[#3b9b61] shadow-[0_0_0_3px_rgba(59,155,97,0.12)]" /></div>
         </header>
         <main className="min-h-[calc(100vh-4rem)] p-4 md:p-8">{children}</main>

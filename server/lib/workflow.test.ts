@@ -14,14 +14,15 @@ describe("controlled workflow behavior", () => {
     });
   });
 
-  it("records an administrator decision without authorizing an external action", () => {
-    const result = buildWorkflowReview("admin", "approved", 9, "Ready for a human to use.");
+  it("records one administrator decision without authorizing an external action", () => {
+    const result = buildWorkflowReview("admin", "pending_approval", "approved", 9, "Ready for a human to use.");
     expect(result).toMatchObject({ status: "approved", reviewedByUserId: 9, reviewerNote: "Ready for a human to use.", externalActionPerformed: false });
     expect(result.reviewedAt).toBeInstanceOf(Date);
   });
 
-  it("blocks ordinary users and empty drafts from controlled workflow transitions", () => {
-    expect(() => buildWorkflowReview("user", "approved", 9)).toThrow("Only administrators can review workflow drafts.");
+  it("blocks ordinary users, blank drafts, and repeated review of a non-pending record", () => {
+    expect(() => buildWorkflowReview("user", "pending_approval", "approved", 9)).toThrow("Only administrators can review workflow drafts.");
+    expect(() => buildWorkflowReview("admin", "approved", "rejected", 9)).toThrow("Only pending drafts can be reviewed.");
     expect(() => buildDraftValues({ title: " ", draftType: "summary", content: " ", requestedByUserId: 1 })).toThrow("A workflow draft requires a title and content.");
   });
 });

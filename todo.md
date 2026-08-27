@@ -25,3 +25,16 @@
 - [x] Verify the public repository includes the final checklist and matches the released source state before delivery.
 - [x] Add and run Vitest coverage for append-only audit-event payload construction and key audit metadata.
 - [x] Add and run Vitest coverage for draft creation, administrator review, and the no-external-action workflow boundary.
+- [x] Review applicable design guidance and improve the evidence-led visual identity, screen hierarchy, and interaction polish.
+- [x] Perform deep regression checks across source governance, retrieval behavior, role controls, feedback, workflows, evaluation, audit events, notifications, and production build.
+- [x] Validate desktop and mobile visual behavior after the design refinement and resolve any review findings.
+- [x] Write a step-by-step implementation and verification report explaining the complete agent build.
+- [ ] Save, publicly synchronize, and verify the improved release without publishing confidential firm information.
+- [x] Apply the evidence-led visual system to Sources, Workflows, Evaluation, Controls, and Guide with differentiated layouts, intentional empty states, and clearer approval or audit motifs.
+- [x] Re-run desktop and mobile visual review after the cross-workspace refinements and confirm the design findings are addressed.
+- [x] Refine the implementation guide with evidence-led hierarchy, traceability motifs, and a clearer connection-readiness decision gate.
+- [x] Add explicit tests for serious-issue feedback, ingestion-failure notification, and draft-ready notification triggers, documenting live-delivery limits where applicable.
+- [x] Run and record a focused source-governance regression pass covering source creation, approval or archival eligibility, upload input controls, and retrieval boundaries.
+- [x] Add route-level tests that verify feedback, ingestion-failure, and draft-ready paths call the owner-alert helper, plus source creation and lifecycle transitions under protected server procedures.
+- [x] Add an administrator-only evaluation create-and-run regression test with grounded and decline behavior coverage.
+- [x] Add source-approval transition and document-upload input-validation regression coverage, then rerun the complete test, type, and build suite.

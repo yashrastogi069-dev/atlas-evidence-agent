@@ -283,10 +283,19 @@ export async function listWorkflowDrafts(role: "admin" | "user", userId: number)
   return db.select().from(workflowDrafts).where(where).orderBy(desc(workflowDrafts.createdAt));
 }
 
+export async function getWorkflowDraft(draftId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const rows = await db.select().from(workflowDrafts).where(eq(workflowDrafts.id, draftId)).limit(1);
+  return rows[0];
+}
+
 export async function reviewWorkflowDraft(draftId: number, reviewerUserId: number, status: DraftReviewStatus, reviewerNote?: string) {
   const db = await getDb();
   if (!db) throw new Error("Database is unavailable.");
-  const review = buildWorkflowReview("admin", status, reviewerUserId, reviewerNote);
+  const draft = await getWorkflowDraft(draftId);
+  if (!draft) throw new Error("Workflow draft not found.");
+  const review = buildWorkflowReview("admin", draft.status, status, reviewerUserId, reviewerNote);
   await db.update(workflowDrafts).set({ status: review.status, reviewedByUserId: review.reviewedByUserId, reviewerNote: review.reviewerNote, reviewedAt: review.reviewedAt }).where(eq(workflowDrafts.id, draftId));
   return review;
 }
